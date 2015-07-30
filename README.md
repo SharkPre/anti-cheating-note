@@ -39,11 +39,11 @@ public:
 	}
 
 	void Set (int n){
-		mValue[mIndex] = n ^ mMask;
-		mValueB[mIndex] = n ^ mMaskB;
 		mIndex++;
 		if (mIndex >= 10)
 			mIndex = 0;
+		mValue[mIndex] = n ^ mMask;
+		mValueB[mIndex] = n ^ mMaskB;
 	}
 
 	int Get (){
