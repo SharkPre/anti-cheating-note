@@ -14,6 +14,56 @@
 * 记录数值的变化历史，检测不正常的数值变化。
 
 *参考ProtectedNumber.cpp的一些数值处理方法*
+```c++
+class ProtectedNumber {
+public:
+	ProtectedNumber (int n) {
+		mMask = 0;
+		mMaskB = 0;
+		
+		mIndex = 0;
+		mValueB = new int[10];
+		memset (mValue, 0, sizeof (mValue));
+		memset (mValueB, 0, sizeof (mValue));
+
+		for (int i = 0; i < sizeof (int); i++) {
+			mMask |= (rand () % 255 + 1) << (i * 8);
+			mMaskB |= (rand () % 255 + 1) << (i * 8);
+		}
+
+		Set (n);
+	}
+
+	~ProtectedNumber (){
+		delete mValueB;
+	}
+
+	void Set (int n){
+		mValue[mIndex] = n ^ mMask;
+		mValueB[mIndex] = n ^ mMaskB;
+		mIndex++;
+		if (mIndex >= 10)
+			mIndex = 0;
+	}
+
+	int Get (){
+		int v = mValue[mIndex] ^ mMask;
+		if (v != (mValueB[mIndex] ^ mMaskB)) {
+			// cheat detected!
+			return 0;
+		}
+		return v;
+	}
+
+private:
+	int mMask;
+	int mMaskB;
+
+	int mIndex;
+	int mValue[10];
+	int *mValueB;
+};
+```
 
 ### 时间变速
 坏人通过劫持系统时间相关的函数(比如gettimeofday)，对时间值增加或者减少，达到加速/减速的效果。
