@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include <assert.h>
 
 class ProtectedNumber {
@@ -6,7 +7,11 @@ public:
 	ProtectedNumber (int n) {
 		mMask = 0;
 		mMaskB = 0;
-		mValueB = new int (0);
+		
+		mIndex = 0;
+		mValueB = new int[10];
+		memset (mValue, 0, sizeof (mValue));
+		memset (mValueB, 0, sizeof (mValue));
 
 		for (int i = 0; i < sizeof (int); i++) {
 			mMask |= (rand () % 255 + 1) << (i * 8);
@@ -21,13 +26,16 @@ public:
 	}
 
 	void Set (int n){
-		mValue = n ^ mMask;
-		*mValueB = n ^ mMaskB;
+		mValue[mIndex] = n ^ mMask;
+		mValueB[mIndex] = n ^ mMaskB;
+		mIndex++;
+		if (mIndex >= 10)
+			mIndex = 0;
 	}
 
 	int Get (){
-		int v = mValue ^ mMask;
-		if (v != ((*mValueB) ^ mMaskB)) {
+		int v = mValue[mIndex] ^ mMask;
+		if (v != (mValueB[mIndex] ^ mMaskB)) {
 			// cheat detected!
 			return 0;
 		}
@@ -38,7 +46,8 @@ private:
 	int mMask;
 	int mMaskB;
 
-	int mValue;
+	int mIndex;
+	int mValue[10];
 	int *mValueB;
 };
 
