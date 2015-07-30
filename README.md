@@ -43,14 +43,31 @@ void threadFunc () {
 ```
 
 ### 代码保护
+坏人通过反汇编软件或反编译软件来分析你的代码
+
 * c/c++的代码要移除所有debug symbol
 * c#/java的代码一定要混淆
 * 脚本用二进制保存
+* 代码里的字符串是明文的，不要把加密密钥写在代码里
 * 一些敏感的函数名字改掉，比如一个修改金钱的函数ModMoney，可以通过define大法来保持可读性和安全性
 ```c++
 #define ModMoney ascivjkdf
 void Player::ModMoney (int m)
 ```
+
+### IAP劫持
+坏人通过劫持iap相关的函数，让客户端以为iap购买成功了，实际上iap请求根本没有发到苹果服务器
+
+对应方法：
+* 苹果的iap文章读三遍，读三遍
+
+### 客户端文件修改
+坏人会修改你的执行文件，插入他的代码，或删除你的代码，会修改你的资源文件，会修改你的配置文件
+
+对应方法：
+* 敏感的配置文件不要放在明显的目录，不要用明显的文件名，加密(例如XXTEA)后藏到资源文件目录里边去
+* ios上你是可以读取程序的代码段内存镜像的([Mach-O文件格式介绍](https://developer.apple.com/library/mac/documentation/DeveloperTools/Conceptual/MachORuntime/Reference/reference.html))，对载入后的代码段做hash，发到服务器做校验吧
+
 
 ## 服务器
 
